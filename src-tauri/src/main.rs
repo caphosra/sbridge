@@ -59,8 +59,6 @@ fn main() {
                 let _ = app_handle.trigger_global("reload", None);
             });
 
-            app.emit_all("update-configs", SSHConfig::read_all().unwrap())?;
-
             Ok(())
         })
         .run(tauri::generate_context!())

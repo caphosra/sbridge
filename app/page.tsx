@@ -12,15 +12,16 @@ interface ISSHConfig {
 }
 
 export default function Home() {
-  const [configs, setConfigs] = useState(
-    [] as ISSHConfig[]
-  );
+  const [configs, setConfigs] = useState([] as ISSHConfig[]);
 
   useEffect(() => {
-    listen('update-configs', (event) => {
-      console.log('Hello World');
-      setConfigs(event.payload as ISSHConfig[]);
-    });
+    (async () => {
+      await listen('update-configs', (event) => {
+        console.log('Hello World');
+        setConfigs(event.payload as ISSHConfig[]);
+      });
+      await emit('reload');
+    })();
   }, []);
 
   return (
@@ -35,16 +36,10 @@ export default function Home() {
           >
             Reload
           </ControlButton>
-          <ControlButton
-            className="bg-green-500"
-            onClick={() => {}}
-          >
+          <ControlButton className="bg-green-500" onClick={() => {}}>
             Up All
           </ControlButton>
-          <ControlButton
-            className="bg-red-500"
-            onClick={() => {}}
-          >
+          <ControlButton className="bg-red-500" onClick={() => {}}>
             Quit All
           </ControlButton>
         </div>
@@ -67,9 +62,7 @@ export default function Home() {
                       emit('kill', val.host);
                     }}
                   >
-                    <p className="text-white font-mono">
-                      Running
-                    </p>
+                    <p className="text-white font-mono">Running</p>
                   </button>
                 ) : (
                   <button
@@ -78,22 +71,17 @@ export default function Home() {
                       emit('run', val.host);
                     }}
                   >
-                    <p className="text-white font-mono">
-                      Stopping
-                    </p>
+                    <p className="text-white font-mono">Stopping</p>
                   </button>
                 )}
                 <button className="flex items-center justify-center w-64 rounded bg-slate-600 m-1">
-                  <p className="text-white font-mono">
-                    View
-                  </p>
+                  <p className="text-white font-mono">View</p>
                 </button>
               </div>
             );
           })}
         <p className="fixed bottom-0 left-0 flex w-full justify-center font-mono p-2 bg-white">
-          sbridge - Sync ports over the firewall with the
-          power of SSH
+          sbridge - Sync ports over the firewall with the power of SSH
         </p>
       </div>
     </main>
